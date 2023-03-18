@@ -15,6 +15,7 @@ function App() {
   const [exerciseName, setExerciseName] = useState('');
   const [myData, setMyData] = useState({});
   const [lableError,setLableError] = useState("")
+  const [downloadLInk,setDownloadLink] = useState(null)
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -55,7 +56,7 @@ function App() {
       .then((response) => response.text())
       .then((data) => {
         console.log('file uploaded successfully');
-        document.body.innerHTML = data;
+        setDownloadLink(JSON.parse(data))
       })
       .catch((error) => {
         console.error(error);
@@ -70,53 +71,60 @@ function App() {
       }} >
         <Link underline="none" href="/">PoseEstimationModelGenerator</Link>
       </Typography>
-      <Box sx={
-        {
-          display:"flex",
-          flexDirection:"column",
-          alignItems:"center"
+      {
+        downloadLInk ? <a href={downloadLInk["download_link"]}>Download</a>:
+        <Box sx={
+          {
+            display:"flex",
+            flexDirection:"column",
+            alignItems:"center"
+          }
+        }>{
+          lableError &&
+  
+  
+              <Alert severity="info">{lableError}</Alert>
+  
+            
         }
-      }>{
-        lableError &&
-
-
-            <Alert severity="info">{lableError}</Alert>
-
-          
-      }
-        {selectedFile && <VideoPlayer src={selectedFile} />}
-        <FormControl onSubmit={handleFormSubmit} sx={{
-          display: 'flex',
-          flexDirection: "column",
-
-          maxWidth: 500
-        }}>
-
-          <Button variant="contained" component="label">
-            <VideoFile />File
-            <input hidden type="file" name="file" accept="mp4/*" onChange={handleFileInputChange} />
+          {selectedFile && <VideoPlayer src={selectedFile} />}
+          <form onSubmit={handleFormSubmit}>
+          <FormControl sx={{
+            display: 'flex',
+            flexDirection: "column",
+  
+            maxWidth: 500
+          }}>
+  
+            <Button variant="contained" component="label">
+              <VideoFile />File
+              <input hidden type="file" name="file" accept="mp4/*" onChange={handleFileInputChange} />
+            </Button>
+            <input type="hidden" name="mydata" value={JSON.stringify(myData)} />
+            <TextField
+              id="exercise-name"
+              name="exersice_name"
+              label="Exercise Name"
+              value={exerciseName}
+              onChange={handleExerciseNameChange}
+              sx={{ margin: '12px' }}
+            />
+  
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <LabeledButtons handleClick={handleButtonClick} lableError={lableError} setLableError={setLableError} />
+          </Box>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
+          <Button type='submit'>
+  submit2
           </Button>
-          <input type="hidden" name="mydata" value={JSON.stringify(myData)} />
-          <TextField
-            id="exercise-name"
-            name="exercise_name"
-            label="Exercise Name"
-            value={exerciseName}
-            onChange={handleExerciseNameChange}
-            sx={{ margin: '12px' }}
-          />
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <LabeledButtons handleClick={handleButtonClick} lableError={lableError} setLableError={setLableError} />
+          </FormControl>
+          </form>
+  
+  
         </Box>
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
-        </FormControl>
-
-
-
-      </Box>
+      }
     </Container>
   )
 }

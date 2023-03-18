@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form id="video-form">
+        <input type="file" name="file" onchange="selectedVideo(this)">
+        <input type="hidden" name="mydata" id="mydata">
+        <input type="text" name="exersice_name">
+        <button type="submit">Submit</button>
+    </form>
+    
+    <video id="video" controls>
+        <source id="source" type="video/mp4">
+    </video>
+    
+    
+	<div id="allbuttons">
+        
+    </div>
+	<input placeholder="add lable" id="lableInput" type="text">
+	<button onclick="addLable()">Add</button>
+    <script>
+        
+        
+        
+        function selectedVideo(self){
+            var file = self.files[0];
+            var reader = new FileReader()
+            
+    reader.onload = function(e){
+        var src = e.target.result;
+        var video = document.getElementById("video");
+        var source = document.getElementById("source");
+        source.setAttribute("src",src)
+        video.load();
+    }
+    
+    reader.readAsDataURL(file)
+}
+
+function generateButtonWithSpan(id) {
+    const button = document.createElement("button");
+    button.innerText = id;
+    button.onclick = () => handleClick(id);
+    
+    const p = document.createElement("p");
+  const span = document.createElement("span");
+  span.id = `${id}_id`;
+  
+  p.appendChild(span);
+  button.appendChild(p);
+  
+  document.getElementById("allbuttons").appendChild(button)
+  console.log("added");
+}
+
+var mydata = {
+    "up":[],
+    "down":[]
+}
+
+function handleClick(id) {
+    const span = document.getElementById(`${id}_id`);
+    console.log(`Clicked button with id ${id}, span id is ${span.id}`);
+    
+    
+    const minutes = Math.floor(video.currentTime / 60);
+    const seconds = Math.floor(video.currentTime - minutes * 60);
+    
+    const minutesDisplay = minutes < 10 ? `0${minutes}` : minutes;
+    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
+    
+    mydata[id].push([seconds,minutes]);
+    updateMyData();
+}
+
+
+function addLable(){
+    let lableInput = document.getElementById("lableInput").value
+	generateButtonWithSpan(lableInput)
+    
+    
+}
+
+function updateMyData(){
+    document.getElementById("mydata").value = JSON.stringify(mydata);
+}
+
+const form = document.getElementById('video-form');
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    console.log(mydata);
+    const formData = new FormData(this);
+    const url = 'http://127.0.0.1:8000/home/';
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("file uploaded successfully")
+        document.body.innerHTML = data;
+      })
+    .catch(error => {
+            console.error(error);
+        });
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- const video = document.getElementById('video');
+    const currentTime1 = document.getElementById('current-time1');
+    const currentTime2 = document.getElementById('current-time2');
+    
+    function handleClick1(){
+        const minutes = Math.floor(video.currentTime / 60);
+    const seconds = Math.floor(video.currentTime - minutes * 60);
+      
+    const minutesDisplay = minutes < 10 ? `0${minutes}` : minutes;
+    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
+    currentTime1.textContent = `${minutesDisplay}:${secondsDisplay}`;
+    mydata["up"].push(currentTime);
+    updateMyData();
+}
+
+function handleClick2(){
+    const currentTime = video.currentTime.toFixed(2);
+    currentTime2.textContent = currentTime;
+    mydata["down"].push(currentTime);
+    updateMyData();
+} -->
