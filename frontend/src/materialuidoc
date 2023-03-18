@@ -1,0 +1,98 @@
+import './App.css';
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
+import { Box, display } from '@mui/system';
+import { Button, Paper } from '@mui/material';
+
+const serviceList = ["Service1","Service2","Service3"]
+function App() {
+  return (
+    <div className="App">
+      <Container sx={{
+        width:{
+          sm:1,
+          md:800
+        }
+      }}>
+        <Typography variant='h1' color="primary.main" align="center"
+        sx={{
+          mt:2
+        }}
+        >
+          Services
+        </Typography>
+        <Typography align='left' variant='h2'>
+          Overview
+        </Typography>
+        <Box sx={{
+          display:"flex",flexDirection:{
+            xs:"column",
+            sm:"column",
+            md:"row",
+          },justifyContent:"center",gap:2
+        }}>
+        {
+          serviceList.map((service)=>(
+            <Paper elevation={3} sx={{
+              p:2,
+            }} key={service}>
+                <Typography variant='h3' sx={{
+                  mb:1
+                }}> 
+                {service}
+                </Typography>
+                <Typography sx={{
+                  pl:1
+                }}>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis eaque aperiam ab cum at corrupti hic laborum, amet commodi quasi iste sit, quidem earum architecto vel? Saepe pariatur ea omnis.
+                </Typography>
+                <Box  sx={
+                  
+                  {mt:2,
+                    display:"flex",
+                    justifyContent:"right"
+                }
+
+                }>
+                <Button  sx={{
+                  pt:1,
+                  bgcolor:"secondary.main",
+                  ":hover":{
+                    bgcolor:"primary.main",
+                    color:"white"
+                  }                  
+                }}
+                onClick={()=>{
+                  alert("don't touch me")
+                }}
+                >See more</Button>
+                </Box>
+            </Paper>
+          ))
+        }        
+        </Box>
+      </Container>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+{/* <Container sx={{
+  bgcolor:"primary.main",
+  height:"100vh",
+  width:{
+    xs:1,lg:1000
+  }
+  
+}}>
+  <Typography variant="h3" color="initial" sx={{
+    p:1,
+    ":hover":{
+      bgcolor:"darkblue"
+    }
+
+  }}>Hi</Typography>  
+</Container> */}
